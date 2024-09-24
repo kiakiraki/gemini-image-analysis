@@ -41,13 +41,13 @@ def upload_to_gemini(path, mime_type=None):
 generation_config = {
     "temperature": 1,
     "top_p": 0.95,
-    "top_k": 64,
+    "top_k": 40,
     "max_output_tokens": 8192,
     "response_mime_type": "application/json",
 }
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-1.5-flash-002",
     generation_config=generation_config,
 )
 

@@ -18,6 +18,17 @@ PROMPT = """
 ・似たようなタグが多く出力されないようにする (例えば、wedding dress / wedding party などは wedding として1つのタグを付与する)
 ・似たような意味のタグは1つにまとめる (例えば、smile と laugh など)
 ・出力はJSON形式で、タグとその確信度の組み合わせをリストとして返す。
+
+**出力は以下のJSON形式で行ってください。**
+```json
+[
+  {
+    "tag": "タグ",
+    "confidence": "確信度"
+  },
+  ...
+]
+```
 """
 
 
@@ -35,13 +46,13 @@ def upload_to_gemini(path, mime_type=None):
 generation_config = {
     "temperature": 1,
     "top_p": 0.95,
-    "top_k": 64,
+    "top_k": 40,
     "max_output_tokens": 8192,
     "response_mime_type": "application/json",
 }
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-1.5-flash-002",
     generation_config=generation_config,
 )
 
@@ -73,7 +84,7 @@ def evaluate_image(image):
 
     # JSON形式のレスポンスを解析し、タグと確信度のリストに変換
     try:
-        tags_with_confidence = json.loads(response.text)
+        tags_with_confidence = json.loads(response.text.strip())
         df = pd.DataFrame(tags_with_confidence, columns=["tag", "confidence"])
     except json.JSONDecodeError as e:
         return f"Error parsing JSON response: {e}"
